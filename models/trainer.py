@@ -23,7 +23,8 @@ class Trainer:
     def run(self):
         config = OmegaConf.load(self.config_path)
 
-        accelerator = Accelerator(fp16=config.train.fp16)
+        # accelerator = Accelerator(fp16=config.train.fp16)
+        accelerator = Accelerator(cpu=True)
 
         seed_everything(config.seed)
 
@@ -129,6 +130,8 @@ class Trainer:
         loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype))
         loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype))
         loss = loss_recon + loss_post_recon + loss_duration + loss_pitch + loss_energy
+        print(loss_recon, loss_post_recon, loss_duration, loss_pitch, loss_energy)
+        print(loss)
         tracker.update(
             loss=loss.item(),
             recon=loss_recon.item(),
