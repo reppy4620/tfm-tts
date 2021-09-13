@@ -123,15 +123,13 @@ class Trainer:
         x, x_post, (dur_pred, pitch_pred, energy_pred), (x_mask, y_mask) = model(
             phoneme, a1, f2, x_length, y_length, duration, pitch, energy
         )
-        loss_recon = F.l1_loss(x, mel, reduction='sum') / torch.sum(y_length)
-        loss_post_recon = F.l1_loss(x_post, mel, reduction='sum') / torch.sum(y_length)
+        loss_recon = F.l1_loss(x, mel)
+        loss_post_recon = F.l1_loss(x_post, mel)
         tgt_dur = torch.log(duration + 1e-4) * x_mask
-        loss_duration = F.mse_loss(dur_pred, tgt_dur.to(x.dtype), reduction='sum') / torch.sum(y_length)
-        loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype), reduction='sum') / torch.sum(y_length)
-        loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype), reduction='sum') / torch.sum(y_length)
+        loss_duration = F.mse_loss(dur_pred, tgt_dur.to(x.dtype))
+        loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype))
+        loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype))
         loss = loss_recon + loss_post_recon + loss_duration + loss_pitch + loss_energy
-        print(loss_recon, loss_duration, loss_pitch, loss_energy, loss)
-        print(torch.all(loss_duration.isnan()))
         tracker.update(
             loss=loss.item(),
             recon=loss_recon.item(),
