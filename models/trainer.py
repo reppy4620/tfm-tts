@@ -126,8 +126,8 @@ class Trainer:
         )
         loss_recon = F.l1_loss(x, mel, reduction='sum') / torch.sum(y_length)
         loss_post_recon = F.l1_loss(x_post, mel, reduction='sum') / torch.sum(y_length)
+        print(dur_pred.size(), duration.size())
         tgt_dur = torch.log(duration + 1e-5) * y_mask
-        print(dur_pred.size(), tgt_dur.size())
         loss_duration = F.mse_loss(dur_pred, tgt_dur.to(x.dtype), reduction='sum') / torch.sum(y_length)
         loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype), reduction='sum') / torch.sum(y_length)
         loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype), reduction='sum') / torch.sum(y_length)
