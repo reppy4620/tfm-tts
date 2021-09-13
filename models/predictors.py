@@ -37,7 +37,7 @@ class VarianceAdopter(nn.Module):
         energy,
         path
     ):
-        dur_pred = torch.relu(self.duration_predictor(x, x_mask))
+        dur_pred = self.duration_predictor(x, x_mask)
         x = self.length_regulator(x, path)
         pitch_pred = self.pitch_predictor(x, y_mask)
         energy_pred = self.energy_predictor(x, y_mask)
@@ -46,7 +46,7 @@ class VarianceAdopter(nn.Module):
         return x, (dur_pred, pitch_pred, energy_pred)
 
     def infer(self, x, x_mask):
-        dur_pred = torch.relu(self.duration_predictor(x, x_mask))
+        dur_pred = self.duration_predictor(x, x_mask)
         dur_pred = torch.exp(dur_pred)
         dur_pred = torch.round(dur_pred) * x_mask
         y_lengths = torch.clamp_min(torch.sum(dur_pred, [1, 2]), 1).long()
