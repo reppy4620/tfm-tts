@@ -81,7 +81,7 @@ class TTSModel(nn.Module):
         x_post = x + self.post_net(x)
         x_post *= y_mask
 
-        return x, x_post, (dur_pred, pitch_pred, energy_pred)
+        return x, x_post, (dur_pred, pitch_pred, energy_pred), (x_mask, y_mask)
 
     def infer(self, phoneme, a1, f2, x_length):
         x = self.emb(phoneme, a1, f2)
