@@ -47,7 +47,7 @@ def collate_fn(batch):
 
     pitch = pad_sequence(pitch, batch_first=True).transpose(-1, -2)
     energy = pad_sequence(energy, batch_first=True).transpose(-1, -2)
-    duration = pad_sequence(duration, batch_first=True).squeeze(1)
+    duration = pad_sequence(duration, batch_first=True).transpose(-1, -2)
     y_length = torch.LongTensor(y_length)
 
     return (
