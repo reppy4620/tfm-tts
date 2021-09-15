@@ -17,7 +17,7 @@ class TTSModel(nn.Module):
             params.encoder.channels,
             params.encoder.dropout
         )
-        self.encoder = Transformer(**params.encoder)
+        self.encoder = Conformer(**params.encoder)
         self.variance_adopter = VarianceAdopter(**params.variance_adopter)
         self.decoder = Conformer(**params.decoder)
 
