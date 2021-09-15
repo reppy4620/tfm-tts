@@ -33,8 +33,8 @@ class ConformerLayer(nn.Module):
 
 class Conformer(nn.Module):
     def __init__(self,
-                 channels=256,
-                 n_layers=4,
+                 channels=192,
+                 n_layers=6,
                  n_heads=2,
                  kernel_size=7,
                  dropout=0.1):
