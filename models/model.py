@@ -13,7 +13,7 @@ class TTSModel(nn.Module):
         super(TTSModel, self).__init__()
 
         self.emb = EmbeddingLayer(**params.embedding, channels=params.encoder.channels // 3)
-        self.relive_pos_emb = RelPositionalEncoding(
+        self.relative_pos_emb = RelPositionalEncoding(
             params.encoder.channels,
             params.encoder.dropout
         )
