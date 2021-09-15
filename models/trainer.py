@@ -130,7 +130,6 @@ class Trainer:
         loss_duration = F.mse_loss(dur_pred, tgt_dur.to(x.dtype))
         loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype))
         loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype))
-        print(loss_recon, loss_post_recon, loss_duration, loss_pitch, loss_energy)
         loss = loss_recon + loss_post_recon + loss_duration + loss_pitch + loss_energy
         tracker.update(
             loss=loss.item(),
