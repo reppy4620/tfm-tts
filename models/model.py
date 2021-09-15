@@ -13,7 +13,7 @@ class TTSModel(nn.Module):
         super(TTSModel, self).__init__()
 
         self.emb = EmbeddingLayer(**params.embedding, channels=params.encoder.channels // 3)
-        self.relive_pos_emb = RelPositionalEncoding(
+        self.relative_pos_emb = RelPositionalEncoding(
             params.encoder.channels,
             params.encoder.dropout
         )
@@ -55,7 +55,7 @@ class TTSModel(nn.Module):
         energy
     ):
         x = self.emb(phoneme, a1, f2)
-        x, pos_emb = self.relive_pos_emb(x)
+        x, pos_emb = self.relative_pos_emb(x)
 
         x_mask = sequence_mask(x_length).unsqueeze(1).to(x.dtype)
         y_mask = sequence_mask(y_length).unsqueeze(1).to(x.dtype)
@@ -73,7 +73,7 @@ class TTSModel(nn.Module):
             energy,
             path
         )
-        x, pos_emb = self.relive_pos_emb(x)
+        x, pos_emb = self.relative_pos_emb(x)
         x = self.decoder(x, pos_emb, y_mask)
         x = self.out_conv(x)
         x *= y_mask
@@ -85,14 +85,14 @@ class TTSModel(nn.Module):
 
     def infer(self, phoneme, a1, f2, x_length):
         x = self.emb(phoneme, a1, f2)
-        x, pos_emb = self.relive_pos_emb(x)
+        x, pos_emb = self.relative_pos_emb(x)
 
         x_mask = sequence_mask(x_length).unsqueeze(1).to(x.dtype)
-        x, pos_emb = self.relive_pos_emb(x)
+        x, pos_emb = self.relative_pos_emb(x)
         x = self.encoder(x, pos_emb, x_mask)
 
         x, y_mask = self.variance_adopter.infer(x, x_mask)
-        x, pos_emb = self.relive_pos_emb(x)
+        x, pos_emb = self.relative_pos_emb(x)
         x = self.decoder(x, pos_emb, y_mask)
         x = self.out_conv(x)
         x *= y_mask

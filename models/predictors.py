@@ -17,8 +17,8 @@ class VarianceAdopter(nn.Module):
         self.length_regulator = LengthRegulator()
         self.pitch_predictor = VariancePredictor(
             channels=channels,
-            n_layers=5,
-            kernel_size=5,
+            n_layers=2,
+            kernel_size=3,
             dropout=dropout
         )
         self.energy_predictor = VariancePredictor(
@@ -70,9 +70,9 @@ class VariancePredictor(nn.Module):
 
         self.layers = nn.ModuleList([
             nn.Sequential(
-                LayerNorm(channels),
                 nn.Conv1d(channels, channels, kernel_size, padding=kernel_size // 2),
-                nn.SiLU(),
+                nn.ReLU(),
+                LayerNorm(channels),
                 nn.Dropout(dropout)
             ) for _ in range(n_layers)
         ])

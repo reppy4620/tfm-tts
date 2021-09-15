@@ -22,45 +22,6 @@ class EmbeddingLayer(nn.Module):
         return x
 
 
-class WaveNet(nn.Module):
-    def __init__(self, channels, kernel_size, num_layers, dilation_rate=1, gin_channels=0, dropout=0):
-        super(WaveNet, self).__init__()
-
-        self.channels = channels
-
-        self.dilated_convs = nn.ModuleList()
-        for i in range(num_layers):
-            dilation = dilation_rate ** i
-            padding = int((kernel_size * dilation - dilation) / 2)
-            conv = nn.Conv1d(channels, channels, kernel_size, padding=padding, dilation=dilation)
-            self.dilated_convs.append(conv)
-
-        self.out_convs = nn.ModuleList()
-        for i in range(num_layers):
-            conv = nn.Conv1d(channels, channels*2, 1)
-            self.out_convs.append(conv)
-
-        self.dropout = nn.Dropout(dropout)
-
-        if gin_channels > 0:
-            self.cond_layer = nn.Conv1d(gin_channels, channels, 1)
-
-    def forward(self, x, x_mask, g=None):
-        if g is not None:
-            g = self.cond_layer(g)
-        out = 0
-        for d_conv, o_conv in zip(self.dilated_convs, self.out_convs):
-            if g is not None:
-                x += g
-            x_in = d_conv(x)
-            x_in = x_in.sigmoid() * x_in.tanh()
-            o1, o2 = o_conv(x_in).chunk(2, dim=1)
-            x = (x + o1) * x_mask
-            x = self.dropout(x)
-            out += o2
-        return out * x_mask
-
-
 class ConvolutionModule(nn.Module):
     def __init__(self, channels, kernel_size, dropout):
         super(ConvolutionModule, self).__init__()
@@ -86,11 +47,11 @@ class ConvolutionModule(nn.Module):
 
 
 class FFN(nn.Module):
-    def __init__(self, channels, dropout):
+    def __init__(self, channels, dropout, kernel_size=1):
         super(FFN, self).__init__()
 
         self.norm = LayerNorm(channels)
-        self.conv1 = nn.Conv1d(channels, channels, 1)
+        self.conv1 = nn.Conv1d(channels, channels, kernel_size)
         self.act = nn.SiLU()
         self.conv2 = nn.Conv1d(channels, channels, 1)
         self.dropout = nn.Dropout(dropout)
