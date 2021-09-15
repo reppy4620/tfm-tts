@@ -51,7 +51,7 @@ class FFN(nn.Module):
         super(FFN, self).__init__()
 
         self.norm = LayerNorm(channels)
-        self.conv1 = nn.Conv1d(channels, channels, kernel_size)
+        self.conv1 = nn.Conv1d(channels, channels, kernel_size, padding=kernel_size // 2)
         self.act = nn.SiLU()
         self.conv2 = nn.Conv1d(channels, channels, 1)
         self.dropout = nn.Dropout(dropout)
