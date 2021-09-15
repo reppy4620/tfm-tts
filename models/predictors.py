@@ -17,8 +17,8 @@ class VarianceAdopter(nn.Module):
         self.length_regulator = LengthRegulator()
         self.pitch_predictor = VariancePredictor(
             channels=channels,
-            n_layers=5,
-            kernel_size=5,
+            n_layers=2,
+            kernel_size=3,
             dropout=dropout
         )
         self.energy_predictor = VariancePredictor(
