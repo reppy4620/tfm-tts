@@ -40,10 +40,10 @@ def collate_fn(batch):
     ) = tuple(zip(*batch))
 
     mel = pad_sequence(mel, batch_first=True).transpose(-1, -2)
+    x_length = torch.LongTensor([len(x) for x in phoneme])
     phoneme = pad_sequence(phoneme, batch_first=True)
     a1 = pad_sequence(a1, batch_first=True)
     f2 = pad_sequence(f2, batch_first=True)
-    x_length = torch.LongTensor([len(x) for x in phoneme])
 
     pitch = pad_sequence(pitch, batch_first=True).transpose(-1, -2)
     energy = pad_sequence(energy, batch_first=True).transpose(-1, -2)
