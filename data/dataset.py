@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 from text import Tokenizer
 
 
-class VCDataset(Dataset):
+class TTSDataset(Dataset):
     def __init__(self, fns):
         self.fns = fns
         self.tokenizer = Tokenizer()
