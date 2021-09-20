@@ -120,13 +120,15 @@ class Trainer:
             x_length,
             y_length
         ) = batch
+        duration = duration.repeat_interleave(3, dim=-1)
         x, x_post, (dur_pred, pitch_pred, energy_pred), (x_mask, y_mask) = model(
             phoneme, a1, f2, x_length, y_length, duration, pitch, energy
         )
         loss_recon = F.l1_loss(x, mel)
         loss_post_recon = F.l1_loss(x_post, mel)
-        tgt_dur = torch.log(duration + 1e-4) * x_mask
-        loss_duration = F.mse_loss(dur_pred, tgt_dur.to(x.dtype))
+        # tgt_dur = torch.log(duration + 1e-4) * x_mask
+        # loss_duration = F.mse_loss(dur_pred, duration.to(x.dtype))
+        loss_duration = F.mse_loss(dur_pred, duration.to(x.dtype))
         loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype))
         loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype))
         loss = loss_recon + loss_post_recon + loss_duration + loss_pitch + loss_energy
