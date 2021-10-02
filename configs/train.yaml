@@ -19,18 +19,18 @@ model:
     n_accent: 19
 
   encoder:
-    channels: 192
-    n_heads: 2
+    channels: 576
+    n_heads: 6
     n_layers: 6
     dropout: 0.1
 
   variance_adopter:
-    channels: 192
+    channels: 576
     dropout: 0.1
 
   decoder:
-    channels: 192
-    n_heads: 2
+    channels: 576
+    n_heads: 6
     n_layers: 6
     kernel_size: 7
     dropout: 0.1
