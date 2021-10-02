@@ -4,7 +4,7 @@ resume_checkpoint: false
 
 train:
   fp16: true
-  batch_size: 32
+  batch_size: 16
   num_epochs: 2000
   save_interval: 100
 
