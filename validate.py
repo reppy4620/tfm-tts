@@ -43,10 +43,11 @@ def main():
         phoneme, a1, f2 = phoneme.unsqueeze(0).to(device), a1.unsqueeze(0).to(device), f2.unsqueeze(0).to(device)
         length = torch.LongTensor([phoneme.size(-1)]).to(device)
         with torch.no_grad():
-            mel = model.infer(phoneme, a1, f2, length)
+            mel, pitch = model.infer(phoneme, a1, f2, length)
             wav = hifi_gan(mel)
             mel, wav = mel.cpu(), wav.squeeze(1).cpu()
-        return mel, wav
+            pitch = pitch.squeeze().cpu()
+        return mel, wav, pitch
 
     def save_wav(wav, path):
         torchaudio.save(
@@ -66,6 +67,12 @@ def main():
         plt.savefig(path)
         plt.close()
 
+    def save_pitch(pitch, path):
+        plt.figure(figsize=(10, 6))
+        plt.plot(pitch)
+        plt.savefig(path)
+        plt.close()
+
     fns = list(sorted(list(Path(args.data_dir).glob('*.pt'))))[:100]
 
     for fn in tqdm(fns, total=len(fns)):
@@ -78,7 +85,7 @@ def main():
             _,
             _
         ) = torch.load(fn)
-        mel_gen, wav_gen = infer(label)
+        mel_gen, wav_gen, pitch = infer(label)
 
         d = output_dir / os.path.splitext(fn.name)[0]
         d.mkdir(exist_ok=True)
@@ -87,6 +94,8 @@ def main():
         save_wav(wav_gen, d / 'gen.wav')
 
         save_mel_two(mel_gen.squeeze(), mel.squeeze().transpose(-1, -2), d / 'comp.png')
+
+        save_pitch(pitch, d / 'pitch.png')
 
 
 if __name__ == '__main__':

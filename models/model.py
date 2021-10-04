@@ -91,7 +91,7 @@ class TTSModel(nn.Module):
         x, pos_emb = self.relative_pos_emb(x)
         x = self.encoder(x, pos_emb, x_mask)
 
-        x, y_mask = self.variance_adopter.infer(x, x_mask)
+        x, y_mask, pitch = self.variance_adopter.infer(x, x_mask)
         x, pos_emb = self.relative_pos_emb(x)
         x = self.decoder(x, pos_emb, y_mask)
         x = self.out_conv(x)
@@ -99,4 +99,4 @@ class TTSModel(nn.Module):
 
         x = x + self.post_net(x)
         x *= y_mask
-        return x
+        return x, pitch
