@@ -52,9 +52,7 @@ def main():
         torchaudio.save(
             str(path),
             wav,
-            24000,
-            encoding='PCM_S',
-            bits_per_sample=16
+            24000
         )
 
     def save_mel_two(gen, gt, path):
