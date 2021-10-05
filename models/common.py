@@ -90,9 +90,9 @@ class FFN(nn.Module):
         super(FFN, self).__init__()
 
         self.norm = LayerNorm(channels)
-        self.conv1 = nn.Conv1d(channels, channels, 1)
+        self.conv1 = nn.Conv1d(channels, channels * 4, 1)
         self.act = nn.SiLU()
-        self.conv2 = nn.Conv1d(channels, channels, 1)
+        self.conv2 = nn.Conv1d(channels * 4, channels, 1)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, x_mask):
