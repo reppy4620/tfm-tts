@@ -23,26 +23,6 @@ class TTSModel(nn.Module):
 
         self.out_conv = nn.Conv1d(params.decoder.channels, params.n_mel, 1)
 
-        self.post_net = nn.Sequential(
-            nn.Conv1d(80, params.decoder.channels, 5, padding=2),
-            nn.BatchNorm1d(params.decoder.channels),
-            nn.Tanh(),
-            nn.Dropout(0.5),
-            nn.Conv1d(params.decoder.channels, params.decoder.channels, 5, padding=2),
-            nn.BatchNorm1d(params.decoder.channels),
-            nn.Tanh(),
-            nn.Dropout(0.5),
-            nn.Conv1d(params.decoder.channels, params.decoder.channels, 5, padding=2),
-            nn.BatchNorm1d(params.decoder.channels),
-            nn.Tanh(),
-            nn.Dropout(0.5),
-            nn.Conv1d(params.decoder.channels, params.decoder.channels, 5, padding=2),
-            nn.BatchNorm1d(params.decoder.channels),
-            nn.Tanh(),
-            nn.Dropout(0.5),
-            nn.Conv1d(params.decoder.channels, 80, 5, padding=2)
-        )
-
     def forward(
         self,
         phoneme,
@@ -95,8 +75,5 @@ class TTSModel(nn.Module):
         x, pos_emb = self.relative_pos_emb(x)
         x = self.decoder(x, pos_emb, y_mask)
         x = self.out_conv(x)
-        x *= y_mask
-
-        x = x + self.post_net(x)
         x *= y_mask
         return x, pitch
