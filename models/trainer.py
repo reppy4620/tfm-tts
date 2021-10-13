@@ -121,19 +121,17 @@ class Trainer:
             y_length
         ) = batch
         duration = duration.repeat_interleave(3, dim=-1) / 3
-        x, x_post, (dur_pred, pitch_pred, energy_pred), (x_mask, y_mask) = model(
+        x, (dur_pred, pitch_pred, energy_pred), (x_mask, y_mask) = model(
             phoneme, a1, f2, x_length, y_length, duration, pitch, energy
         )
         loss_recon = F.l1_loss(x, mel)
-        loss_post_recon = F.l1_loss(x_post, mel)
         loss_duration = F.mse_loss(dur_pred, duration.to(x.dtype))
         loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype))
         loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype))
-        loss = loss_recon + loss_post_recon + loss_duration + loss_pitch + loss_energy
+        loss = loss_recon + loss_duration + loss_pitch + loss_energy
         tracker.update(
             loss=loss.item(),
             recon=loss_recon.item(),
-            post_recon=loss_post_recon.item(),
             duration=loss_duration.item(),
             pitch=loss_pitch.item(),
             energy=loss_energy.item()
