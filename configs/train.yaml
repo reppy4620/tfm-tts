@@ -20,17 +20,17 @@ model:
 
   encoder:
     channels: 384
-    n_heads: 4
+    n_heads: 2
     n_layers: 6
     dropout: 0.1
 
   variance_adopter:
-    channels: 384
+    channels: 192
     dropout: 0.1
 
   decoder:
-    channels: 384
-    n_heads: 4
+    channels: 192
+    n_heads: 2
     n_layers: 6
     kernel_size: 7
     dropout: 0.1
