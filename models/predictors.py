@@ -17,8 +17,8 @@ class VarianceAdopter(nn.Module):
         self.length_regulator = LengthRegulator()
         self.pitch_predictor = VariancePredictor(
             channels=channels,
-            n_layers=2,
-            kernel_size=3,
+            n_layers=5,
+            kernel_size=5,
             dropout=dropout
         )
         self.energy_predictor = VariancePredictor(
@@ -39,7 +39,7 @@ class VarianceAdopter(nn.Module):
     ):
         dur_pred = self.duration_predictor(x, x_mask)
         x = self.length_regulator(x, path)
-        pitch_pred = self.pitch_predictor(x, y_mask)
+        pitch_pred = self.pitch_predictor(x.detach(), y_mask)
         energy_pred = self.energy_predictor(x, y_mask)
 
         x += pitch + energy
