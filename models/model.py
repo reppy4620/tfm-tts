@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 
 from .common import EmbeddingLayer, RelPositionalEncoding
-from .transformer import Transformer
 from .conformer import Conformer
 from .predictors import VarianceAdopter
 from .utils import sequence_mask, generate_path
