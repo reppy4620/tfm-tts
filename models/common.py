@@ -61,6 +61,19 @@ class WaveNet(nn.Module):
         return out * x_mask
 
 
+class FNetLayer(nn.Module):
+    def __init__(self, channels, dropout):
+        super(FNetLayer, self).__init__()
+        self.norm = LayerNorm(channels)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):
+        x = self.norm(x)
+        x = torch.real(torch.fft.fft2(x))
+        x = self.dropout(x)
+        return x
+
+
 class ConvolutionModule(nn.Module):
     def __init__(self, channels, kernel_size, dropout):
         super(ConvolutionModule, self).__init__()
