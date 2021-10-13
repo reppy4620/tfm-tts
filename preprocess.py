@@ -11,7 +11,7 @@ import torch
 from omegaconf import OmegaConf
 from tqdm import tqdm
 
-from transform import mel_spectrogram
+from transform import TacotronSTFT
 
 ORIG_SR = None
 NEW_SR = None
@@ -25,6 +25,8 @@ class PreProcessor:
 
         self.output_dir = Path(config.output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        self.to_mel = TacotronSTFT()
 
         global ORIG_SR, NEW_SR
         ORIG_SR = config.orig_sr
@@ -133,7 +135,7 @@ class PreProcessor:
         for i in tqdm(range(len(wav_paths))):
             wav = self.load_wav(wav_paths[i], label_paths[i])
             pitch, *_ = self.extract_feats(wav)
-            mel, energy = mel_spectrogram(torch.FloatTensor(wav)[None, :])
+            mel, energy = self.to_mel(torch.FloatTensor(wav)[None, :])
             *label, duration = self.load_label(label_paths[i], NEW_SR, mel.size(-1))
 
             assert sum(duration) == mel.size(-1), f'{sum(duration)}, {mel.size(-1)}'
@@ -144,9 +146,7 @@ class PreProcessor:
             pitch[pitch != 0] = np.log(pitch[pitch != 0])
             energy[energy != 0] = np.log(energy[energy != 0])
 
-            if pitch.shape[0] != mel.size(-1):
-                pitch = pitch[:mel.size(-1)]
-                energy = energy[:mel.size(-1)]
+            assert pitch.shape[0] == mel.size(-1)
 
             wavs.append(wav)
             mels.append(mel)
