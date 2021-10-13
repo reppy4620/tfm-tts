@@ -94,8 +94,8 @@ class Trainer:
             optimizer.step()
             scheduler.step()
             bar.update()
-            bar.set_postfix_str(f'Loss: {loss:.6f}')
-        bar.set_postfix_str(f'Mean Loss: {tracker.loss.mean():.6f}')
+            self.set_losses(bar, tracker)
+        self.set_losses(bar, tracker)
         if accelerator.is_main_process:
             self.write_losses(epoch, writer, tracker, mode='train')
         bar.close()
@@ -126,8 +126,6 @@ class Trainer:
         )
         loss_recon = F.l1_loss(x, mel)
         loss_post_recon = F.l1_loss(x_post, mel)
-        # tgt_dur = torch.log(duration + 1e-4) * x_mask
-        # loss_duration = F.mse_loss(dur_pred, duration.to(x.dtype))
         loss_duration = F.mse_loss(dur_pred, duration.to(x.dtype))
         loss_pitch = F.mse_loss(pitch_pred, pitch.to(x.dtype))
         loss_energy = F.mse_loss(energy_pred, energy.to(x.dtype))
@@ -175,3 +173,6 @@ class Trainer:
     def write_losses(self, epoch, writer, tracker, mode='train'):
         for k, v in tracker.items():
             writer.add_scalar(f'{mode}/{k}', v.mean(), epoch)
+
+    def set_losses(self, bar, tracker):
+        bar.set_postfix_str(f', '.join([f'{k}: {v.mean():.6f}' for k, v in tracker.items()]))
