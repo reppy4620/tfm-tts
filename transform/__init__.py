@@ -1,1 +1,1 @@
-from .audio import TacotronSTFT
+from .audio import mel_spectrogram
