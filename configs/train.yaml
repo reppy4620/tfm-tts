@@ -1,11 +1,11 @@
 seed: 42
-model_dir: ../../models/tfm-tts
+model_dir: ../../models/tfm-tts/test
 resume_checkpoint: false
 
 train:
   fp16: true
-  batch_size: 16
-  num_epochs: 2000
+  batch_size: 32
+  num_epochs: 1000
   save_interval: 100
 
 data:
@@ -19,18 +19,18 @@ model:
     n_accent: 19
 
   encoder:
-    channels: 384
-    n_heads: 4
+    channels: 192
+    n_heads: 2
     n_layers: 6
     dropout: 0.1
 
   variance_adopter:
-    channels: 384
+    channels: 192
     dropout: 0.1
 
   decoder:
-    channels: 384
-    n_heads: 4
+    channels: 192
+    n_heads: 2
     n_layers: 6
     kernel_size: 7
     dropout: 0.1
