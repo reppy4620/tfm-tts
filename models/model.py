@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 from .common import EmbeddingLayer, RelPositionalEncoding
+from .transformer import Transformer
 from .conformer import Conformer
 from .predictors import VarianceAdopter
 from .utils import sequence_mask, generate_path
@@ -16,7 +17,7 @@ class TTSModel(nn.Module):
             params.encoder.channels,
             params.encoder.dropout
         )
-        self.encoder = Conformer(**params.encoder)
+        self.encoder = Transformer(**params.encoder)
         self.variance_adopter = VarianceAdopter(**params.variance_adopter)
         self.decoder = Conformer(**params.decoder)
 
