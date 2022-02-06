@@ -9,7 +9,6 @@ class Tokenizer:
         self.accent_dict = self.build_accent_dict()
 
     def __call__(self, phonemes, a1s, f2s):
-        p, a, f = inputs
         phonemes = [[self.dictionary[s]+len(self.dictionary)*i for i in range(self.state_size)] for s in phonemes]
         phonemes = sum(phonemes, [])
 
