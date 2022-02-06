@@ -24,7 +24,7 @@ class TTSDataset(Dataset):
         ) = torch.load(self.fns[idx])
         phoneme, a1, f2 = self.tokenizer(*label)
         duration = torch.log(duration)
-        return mel, phoneme, a1, f2, pitch, energy, duration
+        return mel.transpose(-1, -2), phoneme, a1, f2, pitch.transpose(-1, -2), energy.transpose(-1, -2), duration.transpose(-1, -2)
 
 
 def collate_fn(batch):
