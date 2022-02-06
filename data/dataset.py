@@ -18,13 +18,13 @@ class TTSDataset(Dataset):
             _,
             mel,
             label,
-            length,
+            duration,
             pitch,
             energy,
-            duration
         ) = torch.load(self.fns[idx])
         phoneme, a1, f2 = self.tokenizer(*label)
-        return mel, phoneme, a1, f2, pitch, energy, duration, length
+        duration = torch.log(duration)
+        return mel, phoneme, a1, f2, pitch, energy, duration
 
 
 def collate_fn(batch):
@@ -36,9 +36,9 @@ def collate_fn(batch):
         pitch,
         energy,
         duration,
-        y_length
     ) = tuple(zip(*batch))
 
+    y_length = torch.LongTensor([len(x) for x in mel])
     mel = pad_sequence(mel, batch_first=True).transpose(-1, -2)
     x_length = torch.LongTensor([len(x) for x in phoneme])
     phoneme = pad_sequence(phoneme, batch_first=True)
