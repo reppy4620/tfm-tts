@@ -120,7 +120,7 @@ class Trainer:
             x_length,
             y_length
         ) = batch
-        duration = duration.repeat_interleave(3, dim=-1) / 3
+        # duration = duration.repeat_interleave(3, dim=-1) / 3
         x, (dur_pred, pitch_pred, energy_pred), (x_mask, y_mask) = model(
             phoneme, a1, f2, x_length, y_length, duration, pitch, energy
         )
