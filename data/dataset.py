@@ -24,6 +24,8 @@ class TTSDataset(Dataset):
             duration
         ) = torch.load(self.fns[idx])
         phoneme, a1, f2 = self.tokenizer(*label)
+        duration = duration.float()
+        duration = torch.log(duration)
         return mel, phoneme, a1, f2, pitch, energy, duration, length
 
 
