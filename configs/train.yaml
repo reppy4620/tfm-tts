@@ -9,7 +9,7 @@ train:
   save_interval: 100
 
 data:
-  data_dir: ./DATA
+  data_dir: ../jsynth/dataset/paf
 
 model:
   n_mel: 80
