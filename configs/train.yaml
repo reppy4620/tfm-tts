@@ -1,5 +1,5 @@
 seed: 42
-model_dir: ../../models/tfm-tts
+model_dir: ../../models/tfm-tts/master
 resume_checkpoint: false
 
 train:
